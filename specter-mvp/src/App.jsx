@@ -1703,24 +1703,77 @@ function AIEnsembleStage({ selectedApplicant, onNext, addSentinelLog }) {
 
               {/* Scanning Visualizer */}
               <div className="aspect-video bg-black/50 rounded-3xl border border-white/5 relative overflow-hidden group">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Fingerprint className={`w-32 h-32 transition-all duration-1000 ${isAnalyzing ? 'text-emerald-500/20 scale-110' : 'text-emerald-500/40 scale-100'}`} />
+                <AnimatePresence mode="wait">
+                  {activeModel === 0 || activeModel === 3 ? (
+                    <motion.div
+                      key="face"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0"
+                    >
+                      <img src="/assets/face-scan.png" alt="Face Scan" className="w-full h-full object-cover opacity-60" />
+                      {/* Face Overlays */}
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: isAnalyzing ? [0, 1, 0] : 1 }}
+                        transition={{ repeat: isAnalyzing ? Infinity : 0, duration: 2 }}
+                        className="absolute inset-0 border-2 border-emerald-500/30 rounded-3xl m-12 pointer-events-none"
+                      >
+                        <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-emerald-500"></div>
+                        <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-emerald-500"></div>
+                        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-emerald-500"></div>
+                        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-emerald-500"></div>
+                      </motion.div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="doc"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0"
+                    >
+                      <img src="/assets/doc-scan.png" alt="Doc Scan" className="w-full h-full object-cover opacity-60" />
+                      {/* Doc Overlays */}
+                      <motion.div 
+                        animate={{ opacity: [0.4, 0.8, 0.4] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                        className="absolute top-1/4 left-1/4 w-1/2 h-1/2 border border-emerald-500/50 bg-emerald-500/5 pointer-events-none flex items-center justify-center"
+                      >
+                        <span className="text-[10px] font-mono text-emerald-400 bg-black/60 px-2 py-1 uppercase tracking-widest">OCR_EXTRACTING...</span>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Status Overlays */}
+                <div className="absolute top-4 right-4 text-right">
+                  <div className="flex items-center gap-2 justify-end">
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                    <span className="text-[10px] font-mono text-white/70 uppercase">High_Entropy_Feed</span>
+                  </div>
+                  <div className="text-[10px] font-mono text-emerald-400 mt-1 uppercase">
+                    {activeModel === 0 ? 'Analyzing_Frequency_Domain' :
+                     activeModel === 1 ? 'Detecting_Cloned_Pixels' :
+                     activeModel === 2 ? 'Probing_Cognitive_Jitter' : 'Mapping_Feature_Vectors'}
+                  </div>
                 </div>
                 
                 {/* Scanning Bar */}
                 <motion.div 
-                  animate={{ y: ['0%', '100%', '0%'] }}
+                  animate={{ y: ['0%', '400%', '0%'] }}
                   transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-                  className="absolute top-0 left-0 w-full h-1/4 bg-gradient-to-b from-transparent via-emerald-500/20 to-transparent pointer-events-none"
+                  className="absolute top-0 left-0 w-full h-1/4 bg-gradient-to-b from-transparent via-emerald-500/20 to-transparent pointer-events-none z-20"
                 />
                 <motion.div 
-                  animate={{ y: ['0%', '100%', '0%'] }}
+                  animate={{ y: ['0%', '400%', '0%'] }}
                   transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-                  className="absolute top-0 left-0 w-full h-px bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.8)] pointer-events-none"
+                  className="absolute top-0 left-0 w-full h-px bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.8)] pointer-events-none z-20"
                 />
 
                 {/* Point Cloud / Data Points */}
-                <div className="absolute inset-0 p-8 grid grid-cols-4 grid-rows-4 opacity-30">
+                <div className="absolute inset-0 p-8 grid grid-cols-4 grid-rows-4 opacity-30 z-10 pointer-events-none">
                   {Array.from({ length: 16 }).map((_, i) => (
                     <motion.div
                       key={i}
@@ -1732,7 +1785,7 @@ function AIEnsembleStage({ selectedApplicant, onNext, addSentinelLog }) {
                 </div>
 
                 {/* Legend Overlay */}
-                <div className="absolute bottom-6 left-6 flex flex-col gap-2">
+                <div className="absolute bottom-6 left-6 flex flex-col gap-2 z-20">
                   {models.map((m, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <div className={`w-1.5 h-1.5 rounded-full ${activeModel === i ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,1)]' : 'bg-slate-700'}`}></div>
