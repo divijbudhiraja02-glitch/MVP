@@ -96,6 +96,121 @@ function MintingSplash({ tx, onComplete }) {
   );
 }
 
+function ProtocolSentinel({ appStage, selectedApplicant }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+
+  const getStageInsights = (stage) => {
+    switch (stage) {
+      case 'intro':
+        return "I am the Specter Sentinel. I'll be guiding you through the technical protocol. Right now, we're selecting a persona to test the system's detection capabilities.";
+      case 'application':
+        return "The application phase is active. I'm monitoring session telemetry for 'Cognitive Jitter'—human-like linguistic nuances that automated LLM bots often lack.";
+      case 'oracle':
+        return "Oracle Stage: I'm supervising the Scout Network. We use specialized agents to intercept life signals. Watch for adversarial 'Signal Injection' attempts—I'll help the Consensus Agent flag them.";
+      case 'ai':
+        return "AI Layer: SyntFace and BehaviorPrint are running parallel CNN and RNN models. I'm checking pixel-level frequency anomalies and behavioral timing patterns.";
+      case 'jury':
+        return "Jury Network: I've distilled 500+ telemetry data points into a concise evidence summary for you. As a juror, your vote will be sealed into a smart contract.";
+      case 'consensus':
+        return "Consensus Reached: The blockchain is anchoring the audit trail. I'm verifying the cryptographic proof of personhood before the final report is issued.";
+      case 'result':
+        return "Final Report: The identity audit is complete. Financial institutions can now verify this proof via the Consortium Hub without accessing raw user data.";
+      default:
+        return "Ready to monitor the protocol flow.";
+    }
+  };
+
+  useEffect(() => {
+    setIsTyping(true);
+    const text = getStageInsights(appStage);
+    let i = 0;
+    setMessage('');
+    const interval = setInterval(() => {
+      setMessage(text.slice(0, i));
+      i++;
+      if (i > text.length) {
+        clearInterval(interval);
+        setIsTyping(false);
+      }
+    }, 20);
+    return () => clearInterval(interval);
+  }, [appStage]);
+
+  return (
+    <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="mb-4 w-80 bg-white/95 backdrop-blur-xl border border-emerald-100 shadow-2xl rounded-3xl p-6 overflow-hidden relative"
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-600/20">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="font-black text-slate-900 text-sm tracking-tight uppercase">Specter Sentinel</h4>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-widest">Active Intelligence</span>
+                </div>
+              </div>
+            </div>
+            <div className="relative">
+              <p className="text-slate-600 text-xs leading-relaxed font-medium">
+                {message}
+                {isTyping && <span className="inline-block w-1.5 h-4 bg-emerald-500 ml-1 animate-pulse align-middle"></span>}
+              </p>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
+              <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest">Stage: {appStage}</span>
+              <div className="flex gap-1">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="w-6 h-1 bg-emerald-100 rounded-full overflow-hidden">
+                    <motion.div 
+                      animate={{ x: [-24, 24] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
+                      className="w-full h-full bg-emerald-500"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 ${
+          isOpen ? 'bg-slate-900 rotate-90' : 'bg-emerald-600'
+        }`}
+      >
+        {isOpen ? (
+          <RotateCcw className="w-7 h-7 text-white" />
+        ) : (
+          <div className="relative">
+            <Brain className="w-8 h-8 text-white" />
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute inset-0 bg-white/20 rounded-full blur-sm"
+            ></motion.div>
+          </div>
+        )}
+      </motion.button>
+    </div>
+  );
+}
+
 export default function SpecterMVP() {
   const [appStage, setAppStage] = useState('intro'); // intro, application, oracle, ai, jury, consensus, result
   const [selectedApplicant, setSelectedApplicant] = useState('real');
@@ -103,6 +218,8 @@ export default function SpecterMVP() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      <ProtocolSentinel appStage={appStage} selectedApplicant={selectedApplicant} />
+
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4">
