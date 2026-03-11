@@ -389,7 +389,7 @@ export default function SpecterMVP() {
 // ============================================
 // STAGE 1: INTRO (PERSONA SELECTION)
 // ============================================
-function IntroStage({ setSelectedApplicant, onNext }) {
+function IntroStage({ setSelectedApplicant, onNext, addSentinelLog }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -460,7 +460,7 @@ function IntroStage({ setSelectedApplicant, onNext }) {
 // ============================================
 // STAGE 2: APPLICATION FORM
 // ============================================
-function ApplicationStage({ selectedApplicant, onNext }) {
+function ApplicationStage({ selectedApplicant, onNext, addSentinelLog }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e) => {
@@ -556,7 +556,7 @@ function ApplicationStage({ selectedApplicant, onNext }) {
 // ============================================
 // LIFE SIGNAL ORACLE - THE UNIQUE DIFFERENTIATOR
 // ============================================
-function LifeSignalOracle({ selectedApplicant, onNext }) {
+function LifeSignalOracle({ selectedApplicant, onNext, addSentinelLog }) {
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamedSignals, setStreamedSignals] = useState([]);
   const [lcsScore, setLcsScore] = useState(0);
@@ -1599,7 +1599,7 @@ function BlockchainView() {
 // ============================================
 // STAGE 4: AI ENSEMBLE
 // ============================================
-function AIEnsembleStage({ selectedApplicant, onNext }) {
+function AIEnsembleStage({ selectedApplicant, onNext, addSentinelLog }) {
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [showMinting, setShowMinting] = useState(false);
 
@@ -1684,7 +1684,7 @@ function AIEnsembleStage({ selectedApplicant, onNext }) {
 // ============================================
 // STAGE 5: JURY NETWORK (CONDITIONAL)
 // ============================================
-function JuryNetworkStage({ onNext }) {
+function JuryNetworkStage({ onNext, addSentinelLog }) {
   const [isVoting, setIsVoting] = useState(false);
   const [showMinting, setShowMinting] = useState(false);
   const [executionStep, setExecutionStep] = useState(null); // null, 'SUBMIT', 'SEAL', 'DONE'
@@ -1859,7 +1859,7 @@ function JuryNetworkStage({ onNext }) {
 // ============================================
 // STAGE 6: CONSENSUS / BLOCKCHAIN
 // ============================================
-function BlockchainStage({ onNext }) {
+function BlockchainStage({ onNext, addSentinelLog }) {
   const [isMinting, setIsMinting] = useState(true);
 
   useEffect(() => {
@@ -1923,7 +1923,7 @@ function BlockchainStage({ onNext }) {
 // ============================================
 // STAGE 7: FINAL RESULT
 // ============================================
-function ResultStage({ selectedApplicant, blockchainTx, onRestart }) {
+function ResultStage({ selectedApplicant, blockchainTx, onRestart, addSentinelLog }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
