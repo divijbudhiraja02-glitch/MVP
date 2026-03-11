@@ -8,7 +8,7 @@ import {
   Building2, Phone, Mail, MapPin, Briefcase, Heart, Car, Home, Smartphone,
   Calendar, DollarSign, FileCheck, Radio, Signal, Cpu, Network, Layers,
   Play, Pause, RotateCcw, ChevronDown, ExternalLink, Info, Sparkles, Landmark,
-  Navigation
+  Navigation, Terminal
 } from 'lucide-react';
 
 // ============================================
@@ -96,29 +96,30 @@ function MintingSplash({ tx, onComplete }) {
   );
 }
 
-function ProtocolSentinel({ appStage, selectedApplicant }) {
+function ProtocolSentinel({ appStage, selectedApplicant, logs }) {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const logContainerRef = useRef(null);
 
   const getStageInsights = (stage) => {
     switch (stage) {
       case 'intro':
-        return "I am the Specter Sentinel. I'll be guiding you through the technical protocol. Right now, we're selecting a persona to test the system's detection capabilities.";
+        return "MASTER ORCHESTRATOR ONLINE. I am the Specter Sentinel. I am currently monitoring persona selection to initialize the cryptographic session intent. Ready to deploy autonomous scouts.";
       case 'application':
-        return "The application phase is active. I'm monitoring session telemetry for 'Cognitive Jitter'—human-like linguistic nuances that automated LLM bots often lack.";
+        return "ORCHESTRATION ACTIVE: Supervising application telemetry. Analyzing keystroke latency and 'Cognitive Jitter' to establish a baseline for human-like linguistic nuances.";
       case 'oracle':
-        return "Oracle Stage: I'm supervising the Scout Network. We use specialized agents to intercept life signals. Watch for adversarial 'Signal Injection' attempts—I'll help the Consensus Agent flag them.";
+        return "SCOUT MESH DEPLOYED. I am now managing 8 Scout Agents across global data layers. Watch the Equifax and Plaid streams—I am prepared to re-route signals if injection points are detected.";
       case 'ai':
-        return "AI Layer: SyntFace and BehaviorPrint are running parallel CNN and RNN models. I'm checking pixel-level frequency anomalies and behavioral timing patterns.";
+        return "EXECUTING CROSS-MODEL VERIFICATION. I am correlating high-entropy outputs from the CNN-ResNet50 (Vision) and Transformer (Behavioral) layers to find hidden contradictions.";
       case 'jury':
-        return "Jury Network: I've distilled 500+ telemetry data points into a concise evidence summary for you. As a juror, your vote will be sealed into a smart contract.";
+        return "TECHNICAL CASE CLERK ACTIVE. I have distilled 500+ raw telemetry signals into an evidence packet. Presenting findings to the Human Jury for final adjudication. Staking $SPEC rewards now.";
       case 'consensus':
-        return "Consensus Reached: The blockchain is anchoring the audit trail. I'm verifying the cryptographic proof of personhood before the final report is issued.";
+        return "FINANCIAL INTEGRITY ENFORCED. The network has reached consensus. I am now authorizing the minting of the Identity Evidence on-chain via the Smart Contract layer.";
       case 'result':
-        return "Final Report: The identity audit is complete. Financial institutions can now verify this proof via the Consortium Hub without accessing raw user data.";
+        return "ORCHESTRATION COMPLETE. The Identity Audit Trail is sealed and verified. Releasing ZK-Proofs to authorized consortium partners (J.P. Morgan, HSBC).";
       default:
-        return "Ready to monitor the protocol flow.";
+        return "System Sentinel standing by for protocol initialization.";
     }
   };
 
@@ -134,9 +135,15 @@ function ProtocolSentinel({ appStage, selectedApplicant }) {
         clearInterval(interval);
         setIsTyping(false);
       }
-    }, 20);
+    }, 15);
     return () => clearInterval(interval);
   }, [appStage]);
+
+  useEffect(() => {
+    if (logContainerRef.current) {
+      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
+    }
+  }, [logs]);
 
   return (
     <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end">
@@ -146,40 +153,70 @@ function ProtocolSentinel({ appStage, selectedApplicant }) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="mb-4 w-80 bg-white/95 backdrop-blur-xl border border-emerald-100 shadow-2xl rounded-3xl p-6 overflow-hidden relative"
+            className="mb-4 w-80 bg-slate-900 border border-emerald-500/30 shadow-[0_0_50px_rgba(16,185,129,0.1)] rounded-3xl overflow-hidden relative"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-600/20">
-                <Sparkles className="w-6 h-6 text-white" />
+            {/* Master Header */}
+            <div className="bg-emerald-600 px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-white animate-pulse" />
+                <h4 className="font-black text-white text-xs tracking-widest uppercase">Master Orchestrator</h4>
               </div>
-              <div>
-                <h4 className="font-black text-slate-900 text-sm tracking-tight uppercase">Specter Sentinel</h4>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <span className="text-[10px] text-emerald-600 font-bold uppercase tracking-widest">Active Intelligence</span>
+              <div className="px-2 py-0.5 bg-black/20 rounded text-[9px] font-bold text-white uppercase tracking-tighter">
+                Logic v4.2
+              </div>
+            </div>
+
+            <div className="p-6">
+              {/* Active Command */}
+              <div className="mb-6 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                  <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Active Analysis</span>
+                </div>
+                <p className="text-slate-300 text-xs leading-relaxed font-medium min-h-[60px]">
+                  {message}
+                  {isTyping && <span className="inline-block w-1.5 h-4 bg-emerald-500 ml-1 animate-pulse align-middle"></span>}
+                </p>
+              </div>
+
+              {/* Master Command Log */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Terminal className="w-3 h-3 text-slate-500" />
+                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Autonomous Command Stream</span>
+                  </div>
+                  <span className="text-[9px] font-mono text-emerald-500/50">LIVE_TELEMETRY</span>
+                </div>
+                <div 
+                  ref={logContainerRef}
+                  className="h-32 bg-black/40 rounded-xl p-3 font-mono text-[9px] overflow-y-auto scrollbar-hide border border-white/5"
+                >
+                  {logs.map((log, i) => (
+                    <div key={i} className="mb-1.5 flex gap-2">
+                      <span className="text-emerald-500 font-bold opacity-50 shrink-0">[{log.time}]</span>
+                      <span className={`${log.type === 'cmd' ? 'text-white' : 'text-slate-400 italic'}`}>
+                        {log.msg}
+                      </span>
+                    </div>
+                  ))}
+                  {logs.length === 0 && <div className="text-slate-600 italic">Initializing command stream...</div>}
                 </div>
               </div>
-            </div>
-            <div className="relative">
-              <p className="text-slate-600 text-xs leading-relaxed font-medium">
-                {message}
-                {isTyping && <span className="inline-block w-1.5 h-4 bg-emerald-500 ml-1 animate-pulse align-middle"></span>}
-              </p>
-            </div>
-            
-            <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
-              <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest">Stage: {appStage}</span>
-              <div className="flex gap-1">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="w-6 h-1 bg-emerald-100 rounded-full overflow-hidden">
-                    <motion.div 
-                      animate={{ x: [-24, 24] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
-                      className="w-full h-full bg-emerald-500"
-                    />
+
+              {/* System Status */}
+              <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-1">Authorization</span>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                    <span className="text-[10px] text-slate-200 font-bold uppercase">Root_Sentinel</span>
                   </div>
-                ))}
+                </div>
+                <div className="flex flex-col items-end">
+                   <span className="text-[8px] text-slate-500 font-bold uppercase tracking-widest mb-1">Sub_Agents</span>
+                   <span className="text-[10px] text-emerald-500 font-mono">08_CONNECTED</span>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -190,19 +227,19 @@ function ProtocolSentinel({ appStage, selectedApplicant }) {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 ${
-          isOpen ? 'bg-slate-900 rotate-90' : 'bg-emerald-600'
+        className={`w-16 h-16 rounded-full flex items-center justify-center shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-2 transition-all duration-300 ${
+          isOpen ? 'bg-slate-900 border-emerald-500 rotate-90' : 'bg-emerald-600 border-emerald-400/30'
         }`}
       >
         {isOpen ? (
           <RotateCcw className="w-7 h-7 text-white" />
         ) : (
           <div className="relative">
-            <Brain className="w-8 h-8 text-white" />
+            <Cpu className="w-8 h-8 text-white animate-pulse" />
             <motion.div
-              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+              animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.6, 0.3] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="absolute inset-0 bg-white/20 rounded-full blur-sm"
+              className="absolute inset-0 bg-emerald-400 rounded-full blur-md"
             ></motion.div>
           </div>
         )}
@@ -215,10 +252,43 @@ export default function SpecterMVP() {
   const [appStage, setAppStage] = useState('intro'); // intro, application, oracle, ai, jury, consensus, result
   const [selectedApplicant, setSelectedApplicant] = useState('real');
   const [blockchainTx, setBlockchainTx] = useState(null);
+  const [sentinelLogs, setSentinelLogs] = useState([
+    { time: new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }), msg: 'SYSTEM BOOT: SPECTER_ROOT v4.2', type: 'info' },
+    { time: new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }), msg: 'ORCHESTRATOR STATUS: ONLINE', type: 'cmd' }
+  ]);
+
+  const addSentinelLog = (msg, type = 'cmd') => {
+    setSentinelLogs(prev => [...prev.slice(-19), {
+      time: new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      msg,
+      type
+    }]);
+  };
+
+  useEffect(() => {
+    const stageCommands = {
+      intro: 'INITIALIZING PERSONA_INTENT_HASH...',
+      application: 'DEPLOYING TELEMETRY_SNIFFER.ANALYZER...',
+      oracle: 'COMMISSIONING SCOUT_MESH_GRID...',
+      ai: 'EXECUTING PARALLEL_ENSEMBLE.DEDUCER...',
+      jury: 'DEDUCTING CASE_EVIDENCE.DISTILLER...',
+      consensus: 'COMMANDING CHAIN_STAMP.ANCHOR...',
+      result: 'GENERATING AUDIT_VERIFICATION.RELAY...'
+    };
+    if (stageCommands[appStage]) {
+      addSentinelLog(stageCommands[appStage]);
+      if (appStage === 'oracle') {
+        setTimeout(() => addSentinelLog('CONNECTING_SCOUTS: 08/08 VERIFIED'), 800);
+      }
+      if (appStage === 'ai') {
+        setTimeout(() => addSentinelLog('RESOLVING_CROSS_MODEL_BIAS: 0.00%'), 1200);
+      }
+    }
+  }, [appStage]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <ProtocolSentinel appStage={appStage} selectedApplicant={selectedApplicant} />
+      <ProtocolSentinel appStage={appStage} selectedApplicant={selectedApplicant} logs={sentinelLogs} />
 
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
@@ -257,18 +327,21 @@ export default function SpecterMVP() {
             <IntroStage
               setSelectedApplicant={setSelectedApplicant}
               onNext={() => setAppStage('application')}
+              addSentinelLog={addSentinelLog}
             />
           )}
           {appStage === 'application' && (
             <ApplicationStage
               selectedApplicant={selectedApplicant}
               onNext={() => setAppStage('oracle')}
+              addSentinelLog={addSentinelLog}
             />
           )}
           {appStage === 'oracle' && (
             <LifeSignalOracle
               selectedApplicant={selectedApplicant}
               onNext={() => setAppStage('ai')}
+              addSentinelLog={addSentinelLog}
             />
           )}
           {appStage === 'ai' && (
@@ -281,11 +354,13 @@ export default function SpecterMVP() {
                   setAppStage('jury');
                 }
               }}
+              addSentinelLog={addSentinelLog}
             />
           )}
           {appStage === 'jury' && (
             <JuryNetworkStage
               onNext={() => setAppStage('consensus')}
+              addSentinelLog={addSentinelLog}
             />
           )}
           {appStage === 'consensus' && (
@@ -294,6 +369,7 @@ export default function SpecterMVP() {
                 setBlockchainTx(tx);
                 setAppStage('result');
               }}
+              addSentinelLog={addSentinelLog}
             />
           )}
           {appStage === 'result' && (
@@ -301,6 +377,7 @@ export default function SpecterMVP() {
               selectedApplicant={selectedApplicant}
               blockchainTx={blockchainTx}
               onRestart={() => setAppStage('intro')}
+              addSentinelLog={addSentinelLog}
             />
           )}
         </AnimatePresence>
@@ -354,6 +431,7 @@ function IntroStage({ setSelectedApplicant, onNext }) {
             key={persona.id}
             onClick={() => {
               setSelectedApplicant(persona.id);
+              addSentinelLog(`PERSONA_LOCKED: ${persona.name.toUpperCase()}`);
               onNext();
             }}
             className="group relative bg-white rounded-3xl border border-slate-200 p-8 text-left transition-all hover:border-emerald-500 hover:shadow-2xl hover:shadow-emerald-500/10 active:scale-[0.98]"
@@ -1404,18 +1482,24 @@ function JuryNetworkView() {
 
               <div className="grid grid-cols-3 gap-3 mb-6">
                 <button
-                  onClick={() => submitVote('SYNTHETIC')}
+                  onClick={() => {
+                    setUserVote('synthetic');
+                    addSentinelLog('MASTER_LOGIC: OVERRIDING_ADJUDICATION(SYNTHETIC)', 'info');
+                  }}
                   className="p-4 bg-red-50 border-2 border-red-200 rounded-xl text-center hover:border-red-400 transition-colors"
                 >
                   <XCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                  <span className="font-semibold text-red-700">SYNTHETIC</span>
+                  <span className="text-sm font-bold text-red-700">Flag Synthetic</span>
                 </button>
                 <button
-                  onClick={() => submitVote('REAL')}
+                  onClick={() => {
+                    setUserVote('real');
+                    addSentinelLog('MASTER_LOGIC: VALIDATING_IDENTITY(LEGITIMATE)', 'info');
+                  }}
                   className="p-4 bg-emerald-50 border-2 border-emerald-200 rounded-xl text-center hover:border-emerald-400 transition-colors"
                 >
                   <CheckCircle className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                  <span className="font-semibold text-emerald-700">REAL</span>
+                  <span className="text-sm font-bold text-emerald-700">Verify Real</span>
                 </button>
                 <button
                   onClick={() => submitVote('UNCERTAIN')}
