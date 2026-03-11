@@ -8,7 +8,7 @@ import {
   Building2, Phone, Mail, MapPin, Briefcase, Heart, Car, Home, Smartphone,
   Calendar, DollarSign, FileCheck, Radio, Signal, Cpu, Network, Layers,
   Play, Pause, RotateCcw, ChevronDown, ExternalLink, Info, Sparkles, Landmark,
-  Navigation, Terminal
+  Navigation, Terminal, Scan, Target, Waves, Microscope, Binary
 } from 'lucide-react';
 
 // ============================================
@@ -1602,24 +1602,71 @@ function BlockchainView() {
 function AIEnsembleStage({ selectedApplicant, onNext, addSentinelLog }) {
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [showMinting, setShowMinting] = useState(false);
+  const [activeModel, setActiveModel] = useState(0);
+  const [probability, setProbability] = useState(0);
+
+  const models = [
+    { 
+      name: 'SynthFace', 
+      arch: 'ResNet-50 CNN', 
+      task: 'Frequency Domain Analysis', 
+      accuracy: 94.2, 
+      result: selectedApplicant === 'real' ? 'Clean' : '94% Synthetic',
+      finding: selectedApplicant === 'real' ? 'Natural pixel distribution detected.' : 'High-frequency Moire patterns detected in eye region.',
+      features: ['Pixel Coherence', 'Color Space Latency', 'Adversarial Noise']
+    },
+    { 
+      name: 'DocForge', 
+      arch: 'Multi-layer CNN', 
+      task: 'Micro-print Forensics', 
+      accuracy: 91.8, 
+      result: selectedApplicant === 'real' ? 'Verified' : 'Tampered',
+      finding: selectedApplicant === 'real' ? 'Security holographic markers intact.' : 'Cloned pixel groups found in DOB field.',
+      features: ['Edge Consistency', 'Font Geometry', 'Ink Bleed Simulation']
+    },
+    { 
+      name: 'BehaviorPrint', 
+      arch: 'Temporal Transformer', 
+      task: 'Cognitive Jitter Probe', 
+      accuracy: 87.3, 
+      result: selectedApplicant === 'real' ? 'Matched' : 'Inconsistent',
+      finding: selectedApplicant === 'real' ? 'Session telemetry matches profile.' : 'Bot-like linguistic precision detected.',
+      features: ['Keystroke Entropy', 'Linguistic Variance', 'Session CAD']
+    },
+    { 
+      name: 'AnomalyHunter', 
+      arch: 'Vision Transformer (ViT)', 
+      task: 'Global Pattern Logic', 
+      accuracy: 93.7, 
+      result: selectedApplicant === 'real' ? 'Normal' : 'Anomalous',
+      finding: selectedApplicant === 'real' ? 'Feature vector within 1σ bounds.' : 'Global feature mismatch: 4.8σ deviation.',
+      features: ['Attention Maps', 'Self-Supervised Bias', 'Latent Encoding']
+    },
+  ];
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsAnalyzing(false), 3000);
+    const timer = setTimeout(() => {
+      setIsAnalyzing(false);
+      setProbability(selectedApplicant === 'real' ? 4 : 96);
+      addSentinelLog('ENSEMBLE_VERIFICATION_FINALIZED');
+    }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
-  const models = [
-    { name: 'SynthFace', purpose: 'CNN (ResNet-50) for deepfake detection', accuracy: 94.2, result: selectedApplicant === 'real' ? 'Clean' : '94% Synthetic' },
-    { name: 'DocForge', purpose: 'Multi-layer CNN for document forensics', accuracy: 91.8, result: selectedApplicant === 'real' ? 'Verified' : 'Tampered' },
-    { name: 'BehaviorPrint', purpose: 'Sequence-aware Transformer biometrics', accuracy: 87.3, result: selectedApplicant === 'real' ? 'Matched' : 'Inconsistent' },
-    { name: 'AnomalyHunter', purpose: 'Vision Transformer (ViT) for patterns', accuracy: 93.7, result: selectedApplicant === 'real' ? 'Normal' : 'Anomalous' },
-  ];
+  useEffect(() => {
+    if (isAnalyzing) {
+      const interval = setInterval(() => {
+        setActiveModel(prev => (prev + 1) % models.length);
+      }, 800);
+      return () => clearInterval(interval);
+    }
+  }, [isAnalyzing]);
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="space-y-6 relative"
+      className="max-w-6xl mx-auto"
     >
       <AnimatePresence>
         {showMinting && (
@@ -1630,51 +1677,179 @@ function AIEnsembleStage({ selectedApplicant, onNext, addSentinelLog }) {
         )}
       </AnimatePresence>
 
-      <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-xl">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-3xl font-bold text-slate-900 mb-2">AI Detection <span className="text-blue-600">Ensemble</span></h2>
-            <p className="text-slate-500 text-lg">Cross-referencing signals through 7 specialized neural networks.</p>
-          </div>
-          {isAnalyzing ? (
-            <div className="flex items-center gap-3 px-6 py-3 bg-blue-50 text-blue-600 rounded-2xl font-bold border border-blue-100">
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Running Neural Checks...
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column: Neural Scan Visualization */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-slate-900 rounded-[2.5rem] border border-slate-800 p-8 relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+              <div className="h-full w-full bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:20px_20px]"></div>
             </div>
-          ) : (
-            <button
-              onClick={() => setShowMinting(true)}
-              className="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold text-lg hover:bg-emerald-700 transition-all flex items-center gap-3 shadow-lg"
-            >
-              Finalize AI Audit <ArrowRight className="w-5 h-5" />
-            </button>
-          )}
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h2 className="text-2xl font-black text-white tracking-tight flex items-center gap-3">
+                    <Binary className="w-6 h-6 text-emerald-500" />
+                    NEURAL_DIAGNOSTIC_CONSOLE
+                  </h2>
+                  <p className="text-slate-400 text-xs font-mono uppercase tracking-widest mt-1">Status: {isAnalyzing ? 'Scanning_Latent_Space...' : 'Deep_Analysis_Complete'}</p>
+                </div>
+                <div className="flex gap-2">
+                  <div className={`px-4 py-1.5 rounded-full border text-[10px] font-bold transition-all ${isAnalyzing ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500 animate-pulse' : 'bg-slate-800 border-slate-700 text-slate-400'}`}>
+                    {isAnalyzing ? 'ACTIVE_PROBE' : 'SYSTEM_STABLE'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Scanning Visualizer */}
+              <div className="aspect-video bg-black/50 rounded-3xl border border-white/5 relative overflow-hidden group">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Fingerprint className={`w-32 h-32 transition-all duration-1000 ${isAnalyzing ? 'text-emerald-500/20 scale-110' : 'text-emerald-500/40 scale-100'}`} />
+                </div>
+                
+                {/* Scanning Bar */}
+                <motion.div 
+                  animate={{ y: ['0%', '100%', '0%'] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                  className="absolute top-0 left-0 w-full h-1/4 bg-gradient-to-b from-transparent via-emerald-500/20 to-transparent pointer-events-none"
+                />
+                <motion.div 
+                  animate={{ y: ['0%', '100%', '0%'] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                  className="absolute top-0 left-0 w-full h-px bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.8)] pointer-events-none"
+                />
+
+                {/* Point Cloud / Data Points */}
+                <div className="absolute inset-0 p-8 grid grid-cols-4 grid-rows-4 opacity-30">
+                  {Array.from({ length: 16 }).map((_, i) => (
+                    <motion.div
+                      key={i}
+                      animate={{ opacity: [0.2, 0.8, 0.2] }}
+                      transition={{ duration: Math.random() * 2 + 1, repeat: Infinity }}
+                      className="border border-emerald-500/20 m-2 rounded-lg"
+                    />
+                  ))}
+                </div>
+
+                {/* Legend Overlay */}
+                <div className="absolute bottom-6 left-6 flex flex-col gap-2">
+                  {models.map((m, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <div className={`w-1.5 h-1.5 rounded-full ${activeModel === i ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,1)]' : 'bg-slate-700'}`}></div>
+                      <span className={`text-[8px] font-mono tracking-tighter uppercase ${activeModel === i ? 'text-emerald-400' : 'text-slate-600'}`}>
+                        {m.name}: {m.arch}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Model Diagnostic Cards */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                {models.map((model, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveModel(i)}
+                    className={`p-4 rounded-2xl border transition-all text-left ${activeModel === i 
+                      ? 'bg-emerald-600 border-emerald-500 shadow-lg shadow-emerald-900/40' 
+                      : 'bg-slate-800/50 border-white/5 hover:border-white/10'}`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className={`text-[10px] font-black uppercase tracking-widest ${activeModel === i ? 'text-white' : 'text-slate-400'}`}>{model.name}</h4>
+                      {activeModel === i && <Target className="w-3 h-3 text-emerald-200" />}
+                    </div>
+                    <div className={`text-xs font-bold ${activeModel === i ? 'text-white' : 'text-slate-300'}`}>
+                      {isAnalyzing ? (
+                        <div className="flex gap-1">
+                          {[1,2,3].map(d => <div key={d} className="w-1 h-3 bg-white/20 rounded-full animate-pulse" />)}
+                        </div>
+                      ) : model.result}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {models.map((model, i) => (
-            <div key={i} className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-slate-800">{model.name}</h3>
-                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${isAnalyzing ? 'bg-slate-200 text-slate-400' :
-                  model.result === 'Clean' || model.result === 'Verified' || model.result === 'Matched' || model.result === 'Normal'
-                    ? 'bg-emerald-100 text-emerald-700'
-                    : 'bg-red-100 text-red-700'
-                  }`}>
-                  {isAnalyzing ? 'Processing' : model.result}
-                </span>
+        {/* Right Column: Master Ensemble Data */}
+        <div className="space-y-6">
+          {/* Probability Gauge */}
+          <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-xl relative overflow-hidden">
+            <div className="text-center">
+              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Ensemble_Consensus_Score</h3>
+              <div className="relative inline-flex items-center justify-center">
+                <svg className="w-48 h-48 transform -rotate-90">
+                  <circle
+                    cx="96" cy="96" r="88"
+                    className="stroke-slate-100 fill-none"
+                    strokeWidth="12"
+                  />
+                  <motion.circle
+                    cx="96" cy="96" r="88"
+                    initial={{ strokeDasharray: "553", strokeDashoffset: "553" }}
+                    animate={{ strokeDashoffset: String(553 - (553 * probability) / 100) }}
+                    transition={{ duration: 2, delay: 0.5 }}
+                    className={`stroke-current fill-none ${probability > 50 ? 'text-red-500' : 'text-emerald-500'}`}
+                    strokeWidth="12"
+                    strokeLinecap="round"
+                    strokeDasharray="553"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className={`text-5xl font-black ${probability > 50 ? 'text-red-600' : 'text-emerald-600'}`}>{isAnalyzing ? '--' : probability}%</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Synthetic</span>
+                </div>
               </div>
-              <p className="text-sm text-slate-500 mb-4">{model.purpose}</p>
-              <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: isAnalyzing ? '100%' : `${model.accuracy}%` }}
-                  transition={{ duration: 3 }}
-                  className="h-full bg-blue-500"
-                />
+              <p className="mt-6 text-sm text-slate-500 leading-relaxed px-4">
+                {isAnalyzing ? 'Correlating high-confidence signals...' : `Ensemble confirms a ${probability}% probability that this identity is ${probability > 50 ? 'SYNTHETIC' : 'LEGITIMATE'}.`}
+              </p>
+            </div>
+          </div>
+
+          {/* Technical Detail Pane */}
+          <div className="bg-slate-50 rounded-[2rem] border border-slate-200 p-8 flex-1">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center">
+                <Microscope className="w-5 h-5 text-emerald-500" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Technical_Probe</h3>
+                <p className="text-[10px] text-slate-500 font-mono tracking-tighter">Feature Extractor v2.1</p>
               </div>
             </div>
-          ))}
+
+            <div className="space-y-4">
+              <div className="p-4 bg-white rounded-2xl border border-slate-100">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Architecture</span>
+                <span className="text-xs font-bold text-slate-800">{models[activeModel].arch}</span>
+              </div>
+              <div className="p-4 bg-white rounded-2xl border border-slate-100">
+                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest block mb-2">Diagnostic_Output</span>
+                <p className="text-xs text-slate-600 leading-relaxed italic">"{models[activeModel].finding}"</p>
+              </div>
+              <div className="flex flex-wrap gap-2 pt-2">
+                {models[activeModel].features.map(f => (
+                  <span key={f} className="px-3 py-1 bg-white border border-slate-200 rounded-full text-[9px] font-bold text-slate-500 uppercase tracking-tighter">● {f}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {!isAnalyzing && (
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={() => {
+                addSentinelLog('AUTHORIZING_CRYPTOGRAPHIC_SIG_MINT');
+                setShowMinting(true);
+              }}
+              className="w-full py-5 bg-slate-900 text-white rounded-[2rem] font-black text-lg hover:shadow-2xl hover:bg-black transition-all flex items-center justify-center gap-4 group"
+            >
+              FINALIZE AI AUDIT
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+            </motion.button>
+          )}
         </div>
       </div>
     </motion.div>
